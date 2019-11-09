@@ -1,0 +1,5 @@
+use_frameworks!
+
+target 'PKAutogrowingTextViewCell_Example' do
+  pod 'PKAutogrowingTextViewCell', :path => '../'
+end
