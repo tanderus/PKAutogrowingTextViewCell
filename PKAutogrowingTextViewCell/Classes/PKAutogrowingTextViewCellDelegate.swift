@@ -12,21 +12,12 @@ public protocol PKAutogrowingTextViewCellDelegate: class {
 	
 	var tableView: UITableView! { get }
 	
-	func pkAutogrowingTextViewCellDidBeginEditing(_ cell: PKAutogrowingTextViewCell)
-	func pkAutogrowingTextViewCellDidEndEditing(_ cell: PKAutogrowingTextViewCell)
-	
 	func pkAutogrowingTextViewCell(_ cell: PKAutogrowingTextViewCell, didChangeText newText: String)
 	
 	func pkAutogrowingTextViewCellDidRequestToChangeHeight(_ cell: PKAutogrowingTextViewCell)
 }
 
 public extension PKAutogrowingTextViewCellDelegate {
-	
-	func pkAutogrowingTextViewCellDidBeginEditing(_ cell: PKAutogrowingTextViewCell) {
-		scrollCellToBottom(cell, animated: true)
-	}
-	
-	func pkAutogrowingTextViewCellDidEndEditing(_ cell: PKAutogrowingTextViewCell) {}
 	
 	func pkAutogrowingTextViewCell(_ cell: PKAutogrowingTextViewCell, didChangeText newText: String) {}
 	
