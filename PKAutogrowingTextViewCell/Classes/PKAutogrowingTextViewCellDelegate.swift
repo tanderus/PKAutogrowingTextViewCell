@@ -14,6 +14,7 @@ public protocol PKAutogrowingTextViewCellDelegate: class {
 	
 	func pkAutogrowingTextViewCellShouldBeginEditing(_ cell: PKAutogrowingTextViewCell) -> Bool
 	func pkAutogrowingTextViewCellDidBeginEditing(_ cell: PKAutogrowingTextViewCell)
+	
 	func pkAutogrowingTextViewCellDidEndEditing(_ cell: PKAutogrowingTextViewCell)
 	
 	func pkAutogrowingTextViewCell(_ cell: PKAutogrowingTextViewCell, didChangeText newText: String)
@@ -24,8 +25,8 @@ public protocol PKAutogrowingTextViewCellDelegate: class {
 public extension PKAutogrowingTextViewCellDelegate {
 	
 	func pkAutogrowingTextViewCellShouldBeginEditing(_ cell: PKAutogrowingTextViewCell) -> Bool { true }
-	
 	func pkAutogrowingTextViewCellDidBeginEditing(_ cell: PKAutogrowingTextViewCell) {}
+	
 	func pkAutogrowingTextViewCellDidEndEditing(_ cell: PKAutogrowingTextViewCell) {}
 	
 	func pkAutogrowingTextViewCell(_ cell: PKAutogrowingTextViewCell, didChangeText newText: String) {}

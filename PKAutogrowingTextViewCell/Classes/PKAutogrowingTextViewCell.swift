@@ -16,7 +16,7 @@ open class PKAutogrowingTextViewCell: UITableViewCell {
 		UITextView.self
 	}
 	
-	public var maximumLinesAllowed: UInt = 10 {
+	public var maximumLinesAllowed: UInt = 5 {
 		didSet {
 			guard maximumLinesAllowed != oldValue else { return }
 			requestHeightChange()
@@ -94,7 +94,7 @@ open class PKAutogrowingTextViewCell: UITableViewCell {
 // MARK: - UITextViewDelegate
 extension PKAutogrowingTextViewCell: UITextViewDelegate {
 	
-	public func textViewShouldBeginEditing(_ textView: UITextView) -> Bool {
+	open func textViewShouldBeginEditing(_ textView: UITextView) -> Bool {
 		delegate?.pkAutogrowingTextViewCellShouldBeginEditing(self) ?? true
 	}
 	
@@ -102,7 +102,7 @@ extension PKAutogrowingTextViewCell: UITextViewDelegate {
 		delegate?.pkAutogrowingTextViewCellDidBeginEditing(self)
 	}
 	
-	public func textViewDidEndEditing(_ textView: UITextView) {
+	open func textViewDidEndEditing(_ textView: UITextView) {
 		delegate?.pkAutogrowingTextViewCellDidEndEditing(self)
 	}
 	
