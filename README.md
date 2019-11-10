@@ -1,6 +1,8 @@
 # PKAutogrowingTextViewCell
 A Dynamic-height UITableViewCell with UITextView
 
+![Alt Text](Demo.gif)
+
 ## Installation
 
 ### CocoaPods
