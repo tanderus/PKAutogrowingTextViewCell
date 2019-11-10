@@ -36,7 +36,10 @@ tableView.register(PKAutogrowingTextViewCell.self, forCellReuseIdentifier: autoG
 ```
 
 At some point like 
-`func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell` 
+```swift
+func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
+``` 
+
 setup the cell's delegate:
 
 ```swift
