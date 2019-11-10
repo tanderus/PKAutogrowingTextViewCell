@@ -1,7 +1,7 @@
 # PKAutogrowingTextViewCell
 A Dynamic-height UITableViewCell with UITextView
 
-![](Demo.gif =207x448)
+<img src="Demo.gif" alt="Demo" width="207" height="448">
 
 ## Installation
 
