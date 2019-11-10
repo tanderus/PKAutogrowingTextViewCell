@@ -10,7 +10,7 @@ import UIKit
 import PKAutogrowingTextViewCell
 
 class ViewController: UIViewController {
-
+	
 	@IBOutlet weak var tableView: UITableView!
 	
 	private let labelCellId = LabelCell.id
@@ -61,6 +61,12 @@ extension ViewController: UITableViewDataSource {
 		if indexPath.row == 1 {
 			let cell = tableView.dequeueReusableCell(withIdentifier: autoGrowingCellId, for: indexPath) as! PKAutogrowingTextViewCell
 			cell.delegate = self
+			
+			cell.textView.allowsEditingTextAttributes = true
+			
+			var text = (1 ... 10).reduce("") { $0 + String($1) + "\n" }
+			text.removeLast()
+			cell.textView.text = text
 			return cell
 		}
 		

@@ -16,52 +16,47 @@ open class PKAutogrowingTextViewCell: UITableViewCell {
 		UITextView.self
 	}
 	
+	public var maximumLinesAllowed: UInt = 10 {
+		didSet {
+			guard maximumLinesAllowed != oldValue else { return }
+			requestHeightChange()
+		}
+	}
+	
 	public var textViewMargins = UIEdgeInsets.zero {
 		didSet {
+			guard textViewMargins != oldValue else { return }
 			requestHeightChange()
 		}
 	}
 	
-	public var textContainerInsets = UIEdgeInsets.zero {
-		didSet {
-			textView.textContainerInset = textContainerInsets
-			requestHeightChange()
-		}
-	}
-	
-	public var textFont = UIFont.systemFont(ofSize: 14) {
-		didSet {
-			textView.font = textFont
-			requestHeightChange()
-		}
-	}
-	
-	public var textViewText = "" {
-		didSet {
-			textView.text = textViewText
-			requestHeightChange()
-		}
-	}
-	
-	private lazy var textView = {
+	public lazy var textView = {
 		textViewClass.init()
 	}()
+	
+	private var kvObservations = [NSKeyValueObservation]()
 	
 	open override func sizeThatFits(_ size: CGSize) -> CGSize {
 		var size = super.sizeThatFits(size)
 		size.height = textViewMargins.top + textViewMargins.bottom
-		size.height += currentTextHeight
+		size.height += limitedTextViewHeight
 		return size
 	}
 	
 	open override func layoutSubviews() {
 		super.layoutSubviews()
 		
+		let height = limitedTextViewHeight
+		let maxHeight = maximumTextViewHeight
 		textView.frame = CGRect(
 			x: textViewMargins.left,
 			y: textViewMargins.top,
 			width: contentView.bounds.width - textViewMargins.left - textViewMargins.right,
-			height: currentTextHeight - textViewMargins.top - textViewMargins.bottom)
+			height: height)
+		
+		let verticalScrollEnabled = height >= maxHeight
+		textView.isScrollEnabled = verticalScrollEnabled
+		textView.showsVerticalScrollIndicator = verticalScrollEnabled
 	}
 	
 	open override func becomeFirstResponder() -> Bool {
@@ -78,6 +73,24 @@ open class PKAutogrowingTextViewCell: UITableViewCell {
 		contentView.subviews.forEach { $0.removeFromSuperview() }
 		commonInit()
 	}
+	
+	public func requestHeightChangeIfNeeded() {
+		let newTextHeight = currentTextHeight + textViewMargins.top + textViewMargins.bottom
+		guard newTextHeight != bounds.height else {
+			return
+		}
+		
+		requestHeightChange()
+	}
+	
+	public func requestHeightChange() {
+		delegate?.pkAutogrowingTextViewCellDidRequestToChangeHeight(self)
+	}
+	
+	deinit {
+		kvObservations.forEach { $0.invalidate() }
+		kvObservations = []
+	}
 }
 
 // MARK: - UITextViewDelegate
@@ -92,32 +105,58 @@ extension PKAutogrowingTextViewCell: UITextViewDelegate {
 // MARK: - Private
 private extension PKAutogrowingTextViewCell {
 	
+	var limitedTextViewHeight: CGFloat {
+		max(minimumTextViewHeight, min(maximumTextViewHeight, currentTextHeight))
+	}
+	
 	var currentTextHeight: CGFloat {
 		let width = contentView.bounds.width - textViewMargins.left - textViewMargins.right
 		let limit = CGSize(width: width, height: .greatestFiniteMagnitude)
 		return textView.sizeThatFits(limit).height
 	}
 	
+	var textFont: UIFont {
+		textView.font ?? .preferredFont(forTextStyle: .body)
+	}
+	
+	var minimumTextViewHeight: CGFloat {
+		textFont.lineHeight + textContainerVerticalInsets
+	}
+	
+	var maximumTextViewHeight: CGFloat {
+		CGFloat(maximumLinesAllowed) * textFont.lineHeight + textContainerVerticalInsets
+	}
+	
+	var textContainerVerticalInsets: CGFloat {
+		textView.textContainerInset.top + textView.textContainerInset.bottom
+	}
+	
 	func commonInit() {
 		textView.delegate = self
-		textView.font = textFont
-		textView.textContainerInset = textContainerInsets
-		
-		textView.isScrollEnabled = false
-		textView.showsVerticalScrollIndicator = false
 		contentView.addSubview(textView)
-	}
-	
-	func requestHeightChangeIfNeeded() {
-		let newTextHeight = currentTextHeight + textViewMargins.top + textViewMargins.bottom
-		guard newTextHeight != bounds.height else {
-			return
-		}
 		
-		requestHeightChange()
-	}
-	
-	func requestHeightChange() {
-		delegate?.pkAutogrowingTextViewCellDidRequestToChangeHeight(self)
+		kvObservations.append(
+			textView.observe(\.text) { [weak self] (_, _) in
+				self?.requestHeightChangeIfNeeded()
+			}
+		)
+		
+		kvObservations.append(
+			textView.observe(\.font) { [weak self] (_, _) in
+				self?.requestHeightChangeIfNeeded()
+			}
+		)
+		
+		kvObservations.append(
+			textView.observe(\.textContainerInset) { [weak self] (_, _) in
+				self?.requestHeightChangeIfNeeded()
+			}
+		)
+		
+		kvObservations.append(
+			textView.observe(\.attributedText) { [weak self] (_, _) in
+				self?.requestHeightChangeIfNeeded()
+			}
+		)
 	}
 }
