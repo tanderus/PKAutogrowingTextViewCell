@@ -8,8 +8,8 @@ A Dynamic-height UITableViewCell with a UITextView inside
 1. The cell auto-grows till the  `maximumLinesAllowed` reached
 2. After that the `textView.isScrollEnabled` gets `true`
 3. Automatic cell's height recalculation after on-fly changing
-⋅⋅* Cell's properties: `maximumLinesAllowed` and `textViewMargins`
-⋅⋅* TextView's properties:  `text`,  `attributedText`,  `font`,  `textContainerInset`
+    - Cell's properties: `maximumLinesAllowed` and `textViewMargins`
+    - TextView's properties:  `text`,  `attributedText`,  `font`,  `textContainerInset`
 4. Easily to subclass, if you want to customize the behavior
 
 ## Installation
