@@ -30,7 +30,7 @@ open class PKAutogrowingTextViewCell: UITableViewCell {
 		}
 	}
 	
-	public lazy var textView = {
+	private(set) public lazy var textView = {
 		textViewClass.init()
 	}()
 	
