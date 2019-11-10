@@ -62,8 +62,6 @@ extension ViewController: UITableViewDataSource {
 			let cell = tableView.dequeueReusableCell(withIdentifier: autoGrowingCellId, for: indexPath) as! PKAutogrowingTextViewCell
 			cell.delegate = self
 			
-			cell.textView.allowsEditingTextAttributes = true
-			
 			var text = (1 ... 10).reduce("") { $0 + String($1) + "\n" }
 			text.removeLast()
 			cell.textView.text = text

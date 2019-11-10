@@ -46,15 +46,13 @@ open class PKAutogrowingTextViewCell: UITableViewCell {
 	open override func layoutSubviews() {
 		super.layoutSubviews()
 		
-		let height = limitedTextViewHeight
-		let maxHeight = maximumTextViewHeight
 		textView.frame = CGRect(
 			x: textViewMargins.left,
 			y: textViewMargins.top,
 			width: contentView.bounds.width - textViewMargins.left - textViewMargins.right,
-			height: height)
+			height: limitedTextViewHeight)
 		
-		let verticalScrollEnabled = height >= maxHeight
+		let verticalScrollEnabled = currentTextHeight > maximumTextViewHeight
 		textView.isScrollEnabled = verticalScrollEnabled
 		textView.showsVerticalScrollIndicator = verticalScrollEnabled
 	}
@@ -96,6 +94,18 @@ open class PKAutogrowingTextViewCell: UITableViewCell {
 // MARK: - UITextViewDelegate
 extension PKAutogrowingTextViewCell: UITextViewDelegate {
 	
+	public func textViewShouldBeginEditing(_ textView: UITextView) -> Bool {
+		delegate?.pkAutogrowingTextViewCellShouldBeginEditing(self) ?? true
+	}
+	
+	open func textViewDidBeginEditing(_ textView: UITextView) {
+		delegate?.pkAutogrowingTextViewCellDidBeginEditing(self)
+	}
+	
+	public func textViewDidEndEditing(_ textView: UITextView) {
+		delegate?.pkAutogrowingTextViewCellDidEndEditing(self)
+	}
+	
 	open func textViewDidChange(_ textView: UITextView) {
 		delegate?.pkAutogrowingTextViewCell(self, didChangeText: textView.text)
 		requestHeightChangeIfNeeded()
@@ -106,25 +116,25 @@ extension PKAutogrowingTextViewCell: UITextViewDelegate {
 private extension PKAutogrowingTextViewCell {
 	
 	var limitedTextViewHeight: CGFloat {
-		max(minimumTextViewHeight, min(maximumTextViewHeight, currentTextHeight))
+		ceil(max(minimumTextViewHeight, min(maximumTextViewHeight, currentTextHeight)))
+	}
+	
+	var minimumTextViewHeight: CGFloat {
+		ceil(textFont.lineHeight + textContainerVerticalInsets)
+	}
+	
+	var maximumTextViewHeight: CGFloat {
+		ceil(CGFloat(maximumLinesAllowed) * textFont.lineHeight + textContainerVerticalInsets)
 	}
 	
 	var currentTextHeight: CGFloat {
 		let width = contentView.bounds.width - textViewMargins.left - textViewMargins.right
 		let limit = CGSize(width: width, height: .greatestFiniteMagnitude)
-		return textView.sizeThatFits(limit).height
+		return ceil(textView.sizeThatFits(limit).height)
 	}
 	
 	var textFont: UIFont {
 		textView.font ?? .preferredFont(forTextStyle: .body)
-	}
-	
-	var minimumTextViewHeight: CGFloat {
-		textFont.lineHeight + textContainerVerticalInsets
-	}
-	
-	var maximumTextViewHeight: CGFloat {
-		CGFloat(maximumLinesAllowed) * textFont.lineHeight + textContainerVerticalInsets
 	}
 	
 	var textContainerVerticalInsets: CGFloat {
@@ -133,6 +143,7 @@ private extension PKAutogrowingTextViewCell {
 	
 	func commonInit() {
 		textView.delegate = self
+		textView.bounces = false
 		contentView.addSubview(textView)
 		
 		kvObservations.append(
