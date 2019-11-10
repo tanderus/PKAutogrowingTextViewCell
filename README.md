@@ -24,7 +24,9 @@ Register the PKAutogrowingTextViewCell class on your tableView (or it's subclass
 tableView.register(PKAutogrowingTextViewCell.self, forCellReuseIdentifier: autoGrowingCellId)
 ```
 
-At some point like `func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell` setup the cell's delegate:
+At some point like 
+`func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell` 
+setup the cell's delegate:
 
 ```swift
 let cell = tableView.dequeueReusableCell(withIdentifier: autoGrowingCellId, for: indexPath) as! PKAutogrowingTextViewCell

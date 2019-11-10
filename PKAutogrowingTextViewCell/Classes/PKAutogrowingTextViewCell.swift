@@ -16,7 +16,7 @@ open class PKAutogrowingTextViewCell: UITableViewCell {
 		UITextView.self
 	}
 	
-	public var maximumLinesAllowed: UInt = 5 {
+	public var maximumLinesAllowed: UInt = 7 {
 		didSet {
 			guard maximumLinesAllowed != oldValue else { return }
 			requestHeightChange()
@@ -144,6 +144,7 @@ private extension PKAutogrowingTextViewCell {
 	func commonInit() {
 		textView.delegate = self
 		textView.bounces = false
+		textView.font = .systemFont(ofSize: 14)
 		contentView.addSubview(textView)
 		
 		kvObservations.append(
