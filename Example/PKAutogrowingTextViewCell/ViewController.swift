@@ -61,10 +61,6 @@ extension ViewController: UITableViewDataSource {
 		if indexPath.row == 1 {
 			let cell = tableView.dequeueReusableCell(withIdentifier: autoGrowingCellId, for: indexPath) as! PKAutogrowingTextViewCell
 			cell.delegate = self
-			
-			var text = (1 ... 10).reduce("") { $0 + String($1) + "\n" }
-			text.removeLast()
-			cell.textView.text = text
 			return cell
 		}
 		
